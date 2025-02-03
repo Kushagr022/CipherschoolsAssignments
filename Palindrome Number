@@ -1,0 +1,29 @@
+#include <iostream>
+using namespace std;
+
+bool isPalindromeHelper(int N, int& original) {
+    if (N == 0)
+        return true;
+    
+    int digit = N % 10; // Get the rightmost digit
+    original = original * 10 + digit; // Build the reversed number
+    return isPalindromeHelper(N / 10, original); // Recurse with remaining digits
+}
+
+bool isPalindrome(int N) {
+    int original = N;
+    int reversed = 0;
+    if (isPalindromeHelper(N, reversed) && original == reversed)
+        return true;
+    return false;
+}
+
+int main() {
+    int N = 121;
+    if (isPalindrome(N)) {
+        cout << "True" << endl;
+    } else {
+        cout << "False" << endl;
+    }
+    return 0;
+}
