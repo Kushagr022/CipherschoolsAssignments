@@ -1,0 +1,59 @@
+#include <iostream>
+#include <vector>
+#include <sstream>
+using namespace std;
+
+class DirectAddressTable {
+private:
+    vector<int> table;
+    vector<bool> exists; // To track if a key exists
+
+public:
+    DirectAddressTable(int n) {
+        table.resize(n, 0);
+        exists.resize(n, false);
+    }
+
+    void insert(int key, int value) {
+        table[key] = value;
+        exists[key] = true;
+    }
+
+    void search(int key) {
+        if (exists[key])
+            cout << table[key] << endl;
+        else
+            cout << "NOT FOUND" << endl;
+    }
+
+    void remove(int key) {
+        exists[key] = false;
+    }
+};
+
+int main() {
+    int n, q;
+    cin >> n >> q;
+    DirectAddressTable dat(n);
+
+    string command;
+    cin.ignore();
+    for (int i = 0; i < q; i++) {
+        getline(cin, command);
+        stringstream ss(command);
+        string operation;
+        int key, value;
+        ss >> operation >> key;
+
+        if (operation == "INSERT") {
+            ss >> value;
+            dat.insert(key, value);
+        } else if (operation == "SEARCH") {
+            dat.search(key);
+        } else if (operation == "DELETE") {
+            dat.remove(key);
+        }
+    }
+
+    return 0;
+}
