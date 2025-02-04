@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <list>
+using namespace std;
+
+class HashTable {
+    int size;
+    string method;
+    vector<list<int>> table; // For Chaining
+    vector<int> openTable;   // For Open Addressing (-1 means empty)
+
+public:
+    HashTable(int m, string method) : size(m), method(method) {
+        if (method == "CHAINING") {
+            table.resize(size);
+        } else {
+            openTable.resize(size, -1);
+        }
+    }
+
+    int hashFunction(int key) {
+        return key % size;
+    }
+
+    void insert(int key) {
+        int index = hashFunction(key);
+        if (method == "CHAINING") {
+            table[index].push_back(key);
+        } else {
+            while (openTable[index] != -1) 
+                index = (index + 1) % size;
+            openTable[index] = key;
+        }
+    }
+
+    void search(int key) {
+        int index = hashFunction(key);
+        if (method == "CHAINING") {
+            for (int val : table[index])
+                if (val == key) { cout << "FOUND\n"; return; }
+        } else {
+            while (openTable[index] != -1) {
+                if (openTable[index] == key) { cout << "FOUND\n"; return; }
+                index = (index + 1) % size;
+            }
+        }
+        cout << "NOT FOUND\n";
+    }
+
+    void remove(int key) {
+        int index = hashFunction(key);
+        if (method == "CHAINING") {
+            table[index].remove(key);
+        } else {
+            while (openTable[index] != -1) {
+                if (openTable[index] == key) {
+                    openTable[index] = -1;
+                    return;
+                }
+                index = (index + 1) % size;
+            }
+        }
+    }
+};
+
+int main() {
+    int m, q, key;
+    string method, op;
+    cin >> m >> method >> q;
+    HashTable ht(m, method);
+
+    while (q--) {
+        cin >> op >> key;
+        if (op == "INSERT") ht.insert(key);
+        else if (op == "SEARCH") ht.search(key);
+        else if (op == "DELETE") ht.remove(key);
+    }
+    return 0;
+}
